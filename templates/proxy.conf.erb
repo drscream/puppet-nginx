@@ -1,15 +1,10 @@
-upstream php-worker {
-<% web_php_nodes_ip.each do |ip| -%>
-	<% if ip.include? "." %> server <%= ip %>:80; <% end %>
-	<% if ip.include? ":" %> server [<%= ip %>]:80; <% end %>
-<% end -%>
-}
-
 server {
-  listen <%=server_port%>;
-  server_name <%=name%> ;
-  location <%=proxy_base%> {
-    proxy_pass <%=proxy_target%>;
-    <%= opts.collect! {|i| "\t#{i};\n" } -%>
-  }
+	listen <% if ip.include? ":" %>[<%= ip %>]<% else %><%= ip %><% end %><%= server_port %>;
+	<% if not cert_ip.empty? %>listen <%= cert_ip %>:443;
+	listen [::<%= cert_id %>]:443;
+	<% end %>
+	server_name <%= name %>;
+	location / {
+		proxy_pass http://worker-<%= style %>;
+	}
 }
