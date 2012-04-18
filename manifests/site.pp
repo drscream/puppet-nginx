@@ -6,8 +6,7 @@ define nginx::site($ensure=present,
                   $doc_root    = '/var/www',
                   $create_root = false,
                   $port = 80,
-                  $conf_source = 'nginx/site.conf.erb', 
-                  $enable_cgi = false) {
+                  $conf_source = 'nginx/site.conf.erb') {
 
   include nginx::params
 

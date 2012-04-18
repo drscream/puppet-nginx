@@ -1,7 +1,8 @@
 class nginx {
   include nginx::params
 
-  package { 'nginx': 
+  package { 'nginx':
+    name => 'nginx-light',
     ensure => installed,
   }
 
@@ -15,14 +16,6 @@ class nginx {
     refreshonly => true,
     command     => "nginx -s reload",
     onlyif      => "nginx -t",
-  }
-
-  file { '/usr/local/bin/fcgi-wrapcgi.pl':
-    source => 'puppet:///modules/nginx/fcgi-wrapcgi.pl',
-    mode   => 0755,
-    owner  => 'root',
-    group  => 'root',
-    before => Service['nginx']
   }
 
   file { ["/etc/nginx/sites-available", "/etc/nginx/sites-enabled", "/etc/nginx/conf.d"]:

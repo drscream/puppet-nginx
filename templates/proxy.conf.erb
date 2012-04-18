@@ -1,3 +1,10 @@
+upstream php-worker {
+<% web_php_nodes_ip.each do |ip| -%>
+	<% if ip.include? "." %> server <%= ip %>:80; <% end %>
+	<% if ip.include? ":" %> server [<%= ip %>]:80; <% end %>
+<% end -%>
+}
+
 server {
   listen <%=server_port%>;
   server_name <%=name%> ;
