@@ -1,10 +1,22 @@
 server {
 	listen <% if ip.include? ":" %>[<%= ip %>]<% else %><%= ip %><% end %><%= server_port %>;
-	<% if not cert_ip.empty? %>listen <%= cert_ip %>:443;
-	listen [::<%= cert_id %>]:443;
-	<% end %>
 	server_name <%= name %>;
+
 	location / {
 		proxy_pass http://worker-<%= style %>;
 	}
 }
+<% if not cert_ip.empty? %>
+server {
+	listen <%= cert_ip %>:443 ssl;
+	listen [<%= ipv6_prefix %><%= cert_ip %>]:443 ssl;
+	server_name <%= name %>;
+
+	location / {
+		proxy_pass http://worker-<%= style %>;
+	}
+
+	ssl_certificate ssl/<%= cert_id %>.pem;
+	ssl_certificate_key ssl/<%= cert_id %>.pem;
+}
+<% end -%>
