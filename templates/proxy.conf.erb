@@ -1,6 +1,6 @@
 server {
 	listen <% if ip.include? ":" %>[<%= ip %>]<% else %><%= ip %><% end %><%= server_port %>;
-	server_name <%= name %>;
+	server_name <%= name %><% aliases.each do |ali| -%> <%= ali %><% end -%>;
 
 	location / {
 		include microcaching_params;
