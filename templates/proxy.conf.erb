@@ -3,6 +3,9 @@ server {
 	server_name <%= name %>;
 
 	location / {
+		include microcaching_params;
+
+		# Point nginx to the real app/web server
 		proxy_pass http://worker-<%= style %>;
 	}
 }
@@ -13,6 +16,9 @@ server {
 	server_name <%= name %>;
 
 	location / {
+		include microcaching_params;
+
+		# Point nginx to the real app/web server
 		proxy_pass http://worker-<%= style %>;
 	}
 
