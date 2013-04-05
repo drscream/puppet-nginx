@@ -1,14 +1,16 @@
 class nginx {
   include nginx::params
 
+  $nginx_user = $nginx::params::nginx_user
+
   package { 'nginx':
-    name => 'nginx-light',
-    ensure => installed,
+    name => 'nginx-full',
+    ensure => present,
   }
 
   service { 'nginx':
-    ensure => running,
-    enable => true,
+#    ensure => running,
+#    enable => true,
     require => Package['nginx'],
   }
 
@@ -18,7 +20,16 @@ class nginx {
     onlyif      => "nginx -t",
   }
 
-  file { "/etc/nginx/microcaching_params":     
+  file { "/etc/nginx/nginx.conf":
+    ensure  => present,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('nginx/nginx.conf.erb'),
+    notify  => Exec['nginx-reload'],
+  }
+
+  file { "/etc/nginx/microcaching_params":
     ensure  => present,
     require => Package['nginx'],
     notify  => Service['nginx'],

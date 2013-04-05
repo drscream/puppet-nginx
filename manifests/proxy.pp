@@ -1,10 +1,12 @@
 define nginx::proxy(
-	$ip='',
+	$ip='::',
 	$server_port=80,
+	$upstream=true,
 	$style,
 	$cert_id='',
 	$cert_ip='',
 	$aliases=[],
+	$default=false,
 	$config='nginx/proxy.conf.erb',
 ) {
 	include nginx::params

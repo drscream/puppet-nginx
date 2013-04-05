@@ -1,12 +1,13 @@
 server {
-	listen <% if ip.include? ":" %>[<%= ip %>]<% else %><%= ip %><% end %><%= server_port %>;
+	listen [::]:80;
+	listen 80;
 	server_name <%= name %><% aliases.each do |ali| -%> <%= ali %><% end -%>;
 
 	location / {
 		include microcaching_params;
 
 		# Point nginx to the real app/web server
-		proxy_pass http://worker-<%= style %>;
+		proxy_pass http://<% if upstream == true %>worker-<% end %><%= style %>;
 	}
 }
 <% if not cert_ip.empty? %>
@@ -19,7 +20,9 @@ server {
 		include microcaching_params;
 
 		# Point nginx to the real app/web server
-		proxy_pass http://worker-<%= style %>;
+		proxy_pass http://<% if upstream == true %>worker-<% end %><%= style %>;
+		proxy_set_header X-Forwarded-Proto $scheme;
+		proxy_set_header X-HTTPS on;
 	}
 
 	ssl_certificate ssl/<%= cert_id %>.pem;

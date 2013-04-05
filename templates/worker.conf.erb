@@ -1,4 +1,5 @@
 upstream worker-<%= name -%> {
+	ip_hash;
 <% server.each do |ip| -%>
 	server <% if ip.include? ":" %>[<%= ip %>]:80;<% else %><%= ip %>:80;<% end %>
 <% end -%>}

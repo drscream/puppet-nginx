@@ -1,17 +1,20 @@
 define nginx::site($ensure=present,
-                  $owner = false,
+                  $user  = false,
                   $group = false,
-                  $mode  = 2570,
-                  $server_name = 'localhost',
-                  $doc_root    = '/var/www',
-                  $create_root = false,
+                  $mode  = 0755,
+                  $server_name = $name,
+                  $home        = '/var/www',
+                  $create_root = true,
                   $port = 80,
+                  $uwsgi = false,
+                  $aliases = [],
+                  $options = '',
                   $conf_source = 'nginx/site.conf.erb') {
 
   include nginx::params
 
-  if $owner {
-    $_owner = $owner
+  if $user {
+    $_owner = $user
   } else {
     $_owner = 'root'
   }
@@ -23,7 +26,13 @@ define nginx::site($ensure=present,
   }
 
   if $create_root {
-    file {"${doc_root}/${name}":
+    file {"${home}":
+      ensure => $ensure? {present => directory, default => $ensure },
+      owner  => $_owner,
+      group  => $_group,
+      mode   => $mode,
+    }
+    file {"${home}/htdocs":
       ensure => $ensure? {present => directory, default => $ensure },
       owner  => $_owner,
       group  => $_group,
