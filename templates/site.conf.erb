@@ -1,0 +1,18 @@
+server {
+	listen       <%= port %>;
+	server_name  <%= server_name %><% aliases.each do |serveralias| -%> <%= serveralias %><% end -%>;
+
+	location / {
+		root   <%= home %>/htdocs;
+		index  index.html index.htm;
+		<% if uwsgi %>
+		include uwsgi_params;
+		uwsgi_pass unix:/var/run/uwsgi/app/<%= server_name %>/socket;
+		<% end -%>
+		<%- options.sort.each do |key,value| -%>
+		<%= key %> <%= value %>;
+		<%- end -%>
+	}
+	#access_log  logs/host.access.log  main;
+	#error_page  404              /404.html;
+}
