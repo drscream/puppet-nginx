@@ -1,6 +1,5 @@
 server {
 	listen       [::]:<%= port %>;
-	listen       <%= port %>;
 	server_name  <%= server_name %><% aliases.each do |serveralias| -%> <%= serveralias %><% end -%>;
 
 	location / {
